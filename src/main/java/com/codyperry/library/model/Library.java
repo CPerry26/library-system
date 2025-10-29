@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Library {
     private final Map<String, List<Book>> catalog;
@@ -56,5 +57,55 @@ public class Library {
         this.catalog.put(isbn, copies);
 
         return true;
+    }
+
+    public boolean returnBook(String isbn, String memberId) {
+        if (!this.members.containsKey(memberId) || !this.catalog.containsKey(isbn)) {
+            return false;
+        }
+
+        // Get the member's checked out books. If they don't have the book checked out, return false.
+        List<Book> memberCheckedOut = this.checkedOut.getOrDefault(memberId, new ArrayList<>());
+
+        Optional<Book> checkedOutBook = memberCheckedOut.stream().filter((book -> book.isbn().equals(isbn))).findAny();
+        if (!checkedOutBook.isPresent()) {
+            return false;
+        }
+
+        // Remove the checked out book and update the member's current entries.
+        memberCheckedOut.remove(checkedOutBook.get());
+        this.checkedOut.put(memberId, memberCheckedOut);
+
+        // Add the book back to the catalog.
+        List<Book> catalogBooks = this.catalog.getOrDefault(isbn, new ArrayList<>());
+        catalogBooks.add(checkedOutBook.get());
+        this.catalog.put(isbn, catalogBooks);
+
+        return true;
+    }
+
+    public boolean donate(String isbn, String name, String author) {
+        List<Book> catalogEntry = this.catalog.getOrDefault(isbn, new ArrayList<>());
+        catalogEntry.add(new Book(isbn, name, author));
+
+        this.catalog.put(isbn, catalogEntry);
+
+        return true;
+    }
+
+    public boolean leave(String memberId) {
+        return false;
+    }
+
+    public Map<String, List<Book>> getCatalog() {
+        return this.catalog;
+    }
+
+    public Map<String, List<Book>> getCheckedOut() {
+        return this.checkedOut;
+    }
+
+    public List<Book> getMembersCheckedOutBooks() {
+        return null;
     }
 }
