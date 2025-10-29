@@ -42,19 +42,22 @@ public class LibrarySystemImpl implements LibrarySystem {
      * @param memberId
      */
     @Override
-    public synchronized void returnBook(String isbn, String memberId) {
-
+    public synchronized boolean returnBook(String isbn, String memberId) {
+        return this.library.returnBook(isbn, memberId);
     }
 
     /**
      * Donate a book with the given ISBN to the library.
      *
      * @param isbn
+     * @param name
+     * @param author
+     *
      * @return Whether successfully donated or not.
      */
     @Override
-    public synchronized boolean donateBook(String isbn) {
-        return false;
+    public synchronized boolean donateBook(String isbn, String name, String author) {
+        return this.library.donate(isbn, name, author);
     }
 
     /**

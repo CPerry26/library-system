@@ -30,17 +30,21 @@ public interface LibrarySystem {
      *
      * @param isbn
      * @param memberId
+     *
+     * @return Whether the book was successfully returned to the library.
      */
-    void returnBook(String isbn, String memberId);
+    boolean returnBook(String isbn, String memberId);
 
     /**
      * Donate a book with the given ISBN to the library.
      *
      * @param isbn
+     * @param name
+     * @param author
      *
      * @return Whether successfully donated or not.
      */
-    boolean donateBook(String isbn);
+    boolean donateBook(String isbn, String name, String author);
 
     /**
      * Leave the library network. This will return false if there are still checked out books for this member.
