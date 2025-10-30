@@ -3,6 +3,7 @@ package com.codyperry.library.system;
 import com.codyperry.library.model.Book;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LibrarySystem {
     /**
@@ -63,6 +64,13 @@ public interface LibrarySystem {
     List<Book> browseCatalog();
 
     /**
+     * See all the currently checked out books.
+     *
+     * @return A list of the books currently checked out.
+     */
+    List<Book> browseCheckedOut();
+
+    /**
      * Get the `n` most active members in the library network. This will be the current most checked out books.
      *
      * @param n The number of top members to retrieve.
@@ -74,7 +82,7 @@ public interface LibrarySystem {
      *
      * @param memberId
      *
-     * @return A possibly empty list of checked out books for the member.
+     * @return A possibly empty optional or a list of books.
      */
-    List<Book> getCheckedOutBooks(String memberId);
+    Optional<List<Book>> getCheckedOutBooks(String memberId);
 }

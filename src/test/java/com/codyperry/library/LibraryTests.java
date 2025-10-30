@@ -1,10 +1,14 @@
 package com.codyperry.library;
 
+import com.codyperry.library.model.Book;
 import com.codyperry.library.model.Library;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -155,5 +159,122 @@ public class LibraryTests {
 
         boolean donated = library.donate(isbn, name, author);
         assertEquals(donated, true);
+    }
+
+    @Test
+    @Order(13)
+    void testLeavingNotMember() {
+        final Library library = new Library();
+
+        boolean left = library.leave(memberId);
+        assertEquals(left, false);
+    }
+
+    @Test
+    @Order(14)
+    void testLeavingCheckedOutBooks() {
+        final Library library = new Library();
+        library.join("A");
+
+        library.donate(isbn, name, author);
+        library.borrow(isbn, memberId);
+
+        boolean left = library.leave(memberId);
+        assertEquals(left, false);
+    }
+
+    @Test
+    @Order(15)
+    void testLeavingHappyPath() {
+        final Library library = new Library();
+        library.join("A");
+
+        boolean left = library.leave(memberId);
+        assertEquals(left, true);
+    }
+
+    @Test
+    @Order(16)
+    void testGetCheckedOutMemberBooksNotMember() {
+        final Library library = new Library();
+
+        Optional<List<Book>> books = library.getMembersCheckedOutBooks(memberId);
+        assertEquals(books.isEmpty(), true);
+        assertEquals(books.isPresent(), false);
+    }
+
+    @Test
+    @Order(17)
+    void testGetCheckedOutMemberBooksNoBooks() {
+        final Library library = new Library();
+        library.join("A");
+
+        Optional<List<Book>> books = library.getMembersCheckedOutBooks(memberId);
+        assertEquals(books.isEmpty(), true);
+        assertEquals(books.isPresent(), false);
+    }
+
+    @Test
+    @Order(18)
+    void testGetCheckedOutMemberBooksHappyPath() {
+        final Library library = new Library();
+        library.join("A");
+
+        library.donate(isbn, name, author);
+        library.borrow(isbn, memberId);
+
+        Optional<List<Book>> books = library.getMembersCheckedOutBooks(memberId);
+        assertEquals(books.isEmpty(), false);
+        assertEquals(books.isPresent(), true);
+        assertEquals(books.get().size(), 1);
+        assertEquals(books.get().get(0).isbn().equals(isbn), true);
+    }
+
+    @Test
+    @Order(19)
+    void testGetEmptyCatalog() {
+        final Library library = new Library();
+
+        List<Book> books = library.getCatalog();
+        assertEquals(books.isEmpty(), true);
+    }
+
+    @Test
+    @Order(20)
+    void testGetCatalog() {
+        final Library library = new Library();
+
+        library.donate(isbn, name, author);
+        library.donate("1112", "Cool Book", "Cool Author");
+
+        List<Book> books = library.getCatalog();
+        assertEquals(books.isEmpty(), false);
+        assertEquals(books.size(), 2);
+    }
+
+    @Test
+    @Order(21)
+    void testGetEmptyCheckedOut() {
+        final Library library = new Library();
+
+        List<Book> books = library.getCheckedOut();
+        assertEquals(books.isEmpty(), true);
+    }
+
+    @Test
+    @Order(22)
+    void testGetCheckedOut() {
+        final Library library = new Library();
+        library.join("A");
+
+        library.donate(isbn, name, author);
+        library.donate("1112", "Cool Book", "Cool Author");
+
+        library.borrow(isbn, memberId);
+        library.borrow("1112", memberId);
+
+        List<Book> books = library.getCheckedOut();
+        assertEquals(books.isEmpty(), false);
+        assertEquals(books.size(), 2);
     }
 }

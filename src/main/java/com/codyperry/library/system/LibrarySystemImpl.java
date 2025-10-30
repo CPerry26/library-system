@@ -4,6 +4,7 @@ import com.codyperry.library.model.Book;
 import com.codyperry.library.model.Library;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LibrarySystemImpl implements LibrarySystem {
     private final Library library;
@@ -68,7 +69,7 @@ public class LibrarySystemImpl implements LibrarySystem {
      */
     @Override
     public synchronized boolean leaveLibrary(String memberId) {
-        return false;
+        return this.library.leave(memberId);
     }
 
     /**
@@ -78,7 +79,17 @@ public class LibrarySystemImpl implements LibrarySystem {
      */
     @Override
     public synchronized List<Book> browseCatalog() {
-        return null;
+        return this.library.getCatalog();
+    }
+
+    /**
+     * See all the currently checked out books.
+     *
+     * @return A list of the books currently checked out.
+     */
+    @Override
+    public synchronized List<Book> browseCheckedOut() {
+        return this.library.getCheckedOut();
     }
 
     /**
@@ -98,7 +109,7 @@ public class LibrarySystemImpl implements LibrarySystem {
      * @return A possibly empty list of checked out books for the member.
      */
     @Override
-    public synchronized List<Book> getCheckedOutBooks(String memberId) {
-        return null;
+    public synchronized Optional<List<Book>> getCheckedOutBooks(String memberId) {
+        return this.library.getMembersCheckedOutBooks(memberId);
     }
 }
