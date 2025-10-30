@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Library {
     private final Map<String, List<Book>> catalog;
@@ -94,18 +95,28 @@ public class Library {
     }
 
     public boolean leave(String memberId) {
-        return false;
+        if (!this.members.containsKey(memberId) || this.checkedOut.containsKey(memberId)) {
+            return false;
+        }
+
+        this.members.remove(memberId);
+
+        return true;
     }
 
-    public Map<String, List<Book>> getCatalog() {
-        return this.catalog;
+    public List<Book> getCatalog() {
+        return this.catalog.values().stream().flatMap(List::stream).collect(Collectors.toList());
     }
 
-    public Map<String, List<Book>> getCheckedOut() {
-        return this.checkedOut;
+    public List<Book> getCheckedOut() {
+        return this.checkedOut.values().stream().flatMap(List::stream).collect(Collectors.toList());
     }
 
-    public List<Book> getMembersCheckedOutBooks() {
-        return null;
+    public Optional<List<Book>> getMembersCheckedOutBooks(String memberId) {
+        if (!this.members.containsKey(memberId) || !this.checkedOut.containsKey(memberId)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(this.checkedOut.get(memberId));
     }
 }
