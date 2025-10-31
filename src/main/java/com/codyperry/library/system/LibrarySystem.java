@@ -74,8 +74,10 @@ public interface LibrarySystem {
      * Get the `n` most active members in the library network. This will be the current most checked out books.
      *
      * @param n The number of top members to retrieve.
+     *
+     * @return A list of strings in the format (memberId, numBooks).
      */
-    void mostActiveMembers(int n);
+    List<String> mostActiveMembers(int n);
 
     /**
      * Fetch the member's current checked out books.

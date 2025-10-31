@@ -277,4 +277,56 @@ public class LibraryTests {
         assertEquals(books.isEmpty(), false);
         assertEquals(books.size(), 2);
     }
+
+    @Test
+    @Order(23)
+    void testMostActiveMembersEmpty() {
+        final Library library = new Library();
+
+        List<String> activeMembers = library.getActiveMembers(5);
+        assertEquals(activeMembers.isEmpty(), true);
+    }
+
+    @Test
+    @Order(24)
+    void testMostActiveMembersHappyPath() {
+        final Library library = new Library();
+        library.join("A");
+        library.join("B");
+
+        library.donate(isbn, name, author);
+        library.donate("1112", "Cool Book", "Cool Author");
+        library.donate("1113", "Testing Book", "Testing Author");
+
+        library.borrow(isbn, memberId);
+        library.borrow("1112", memberId);
+        library.borrow("1113", "B2");
+
+        List<String> activeMembers = library.getActiveMembers(5);
+        assertEquals(activeMembers.isEmpty(), false);
+        assertEquals(activeMembers.size(), 2);
+        assertEquals(activeMembers.get(0).contains(memberId), true);
+        assertEquals(activeMembers.get(1).contains("B2"), true);
+    }
+
+    @Test
+    @Order(25)
+    void testMostActiveMembersLimit() {
+        final Library library = new Library();
+        library.join("A");
+        library.join("B");
+
+        library.donate(isbn, name, author);
+        library.donate("1112", "Cool Book", "Cool Author");
+        library.donate("1113", "Testing Book", "Testing Author");
+
+        library.borrow(isbn, memberId);
+        library.borrow("1112", memberId);
+        library.borrow("1113", "B2");
+
+        List<String> activeMembers = library.getActiveMembers(1);
+        assertEquals(activeMembers.isEmpty(), false);
+        assertEquals(activeMembers.size(), 1);
+        assertEquals(activeMembers.get(0).contains(memberId), true);
+    }
 }
