@@ -1,7 +1,11 @@
 package com.codyperry.library.model;
 
+import com.codyperry.library.ActiveMemberComparator;
+
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -118,5 +122,23 @@ public class Library {
         }
 
         return Optional.of(this.checkedOut.get(memberId));
+    }
+
+    public List<String> getActiveMembers(int n) {
+        List<String> activeMembers = new ArrayList<>();
+
+        Map<String, List<Book>> sortedBooks = this.checkedOut.entrySet().stream().sorted(new ActiveMemberComparator())
+                .limit(n).collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey, Map.Entry::getValue,
+                                (oldValue, newValue) -> oldValue,
+                                LinkedHashMap::new
+                        ));
+
+        for (Map.Entry<String, List<Book>> entry : sortedBooks.entrySet()) {
+            activeMembers.add("(" + entry.getKey() + ", " + entry.getValue().size() + ")");
+        }
+
+        return activeMembers;
     }
 }

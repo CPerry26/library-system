@@ -96,10 +96,12 @@ public class LibrarySystemImpl implements LibrarySystem {
      * Get the `n` most active members in the library network. This will be the current most checked out books.
      *
      * @param n The number of top members to retrieve.
+     *
+     * @return A list of strings in the format (memberId, numBooks).
      */
     @Override
-    public synchronized void mostActiveMembers(int n) {
-
+    public synchronized List<String> mostActiveMembers(int n) {
+        return this.library.getActiveMembers(n);
     }
 
     /**
